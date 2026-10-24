@@ -1,0 +1,15 @@
+repository: https://github.com/arranbartish/dev-infra-v5-throwaway.git
+stages:
+  - name: unit-test
+    kind: test
+    command: 'echo "test stage on $(uname -m) $(hostname)"; sleep 90'
+  - name: lint
+    kind: analysis
+    command: echo "analysis stage"
+  - name: undeclared-egress
+    kind: analysis
+    command: 'timeout 10 bash -c "exec 3<>/dev/tcp/example.com/443" && echo EGRESS_ALLOWED || echo EGRESS_REFUSED'
+secret_scopes: [v5-throwaway]
+egress: [github.com]
+executor_profile:
+  capacity: spot
